@@ -16,7 +16,7 @@ namespace Microservices.BasketAPI.Services.Concretes
             return ServiceResponse<BasketDto>.Success(JsonSerializer.Deserialize<BasketDto>(existBasket), StatusCodes.Status200OK);
 
         }
-        public async Task<ServiceResponse<NoContent>> CreateOrUpdate(BasketDto basketDto)
+        public async Task<ServiceResponse<NoContent>> CreateOrUpdateAsync(BasketDto basketDto)
         {
             if(basketDto is null)
                 return ServiceResponse<NoContent>.Failure("Basket is null", StatusCodes.Status400BadRequest);
@@ -27,7 +27,7 @@ namespace Microservices.BasketAPI.Services.Concretes
 
         }
 
-        public async Task<ServiceResponse<NoContent>> Delete(string userId)
+        public async Task<ServiceResponse<NoContent>> DeleteAsync(string userId)
         {
             var existBasket = await redisService.GetDatabase().StringGetAsync(userId);
 

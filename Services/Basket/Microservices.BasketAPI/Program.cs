@@ -1,4 +1,6 @@
 using Microservices.BasketAPI.Services;
+using Microservices.BasketAPI.Services.Abstractions;
+using Microservices.BasketAPI.Services.Concretes;
 using Microservices.BasketAPI.Settings;
 using Microsoft.Extensions.Options;
 
@@ -9,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings"));
 builder.Services.AddSingleton<RedisService>(sp =>
 {
     RedisSettings redisSettings = sp.GetRequiredService<IOptions<RedisSettings>>().Value;
@@ -17,7 +20,9 @@ builder.Services.AddSingleton<RedisService>(sp =>
     return redisService;
 });
 
-builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings"));
+builder.Services.AddScoped<IBasketService, BasketService>();
+
+
 
 var app = builder.Build();
 
