@@ -29,7 +29,7 @@ namespace Microservices.DiscountAPI.Services.Concretes
 
             return ServiceResponse<List<DiscountDto>>.Success(discountsDto, StatusCodes.Status200OK);
         }
-        public async Task<ServiceResponse<DiscountDto>> GetDiscountByIdAsync(Guid id)
+        public async Task<ServiceResponse<DiscountDto>> GetDiscountByIdAsync(int id)
         {
             Discount? discount = (await _dbConnection.QueryAsync<Discount>("SELECT * FROM discount WHERE id=@Id", new { Id = id })).SingleOrDefault();
             if (discount == null)
@@ -48,9 +48,18 @@ namespace Microservices.DiscountAPI.Services.Concretes
             return ServiceResponse<List<DiscountDto>>.Success(discountsDto, StatusCodes.Status200OK);
         }
 
-        public Task<ServiceResponse<DiscountDto>> ConfirmCodeAsync(string code, string userId)
+        public async Task<ServiceResponse<DiscountDto>> GetConfirmedCodeAsync(string code, string userId)
         {
-            throw new NotImplementedException();
+            var discounts = await _dbConnection.QueryAsync<Discount>("SELECT * FROM discount WHERE userid=@UserId AND code=@Code", new { UserId = userId, Code = code });
+
+            var hasDiscount = discounts.FirstOrDefault();
+
+            if (hasDiscount == null)
+                ServiceResponse<DiscountDto>.Failure("Discount not found", 404);
+
+            DiscountDto discountDto = _mapper.Map<DiscountDto>(hasDiscount);
+
+            return ServiceResponse<DiscountDto>.Success(discountDto, 200);
         }
 
         public async Task<ServiceResponse<NoContent>> CreateDiscountAsync(CreateDiscountDto createDiscountDto)
@@ -66,14 +75,6 @@ namespace Microservices.DiscountAPI.Services.Concretes
 
             return ServiceResponse<NoContent>.Failure("an error accured while adding", 500);
         }
-
-        public Task<ServiceResponse<NoContent>> DeleteDiscountAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        
-
         public async Task<ServiceResponse<NoContent>> UpdateDiscountAsync(UpdateDiscountDto updateDiscountDto)
         {
             if (updateDiscountDto == null)
@@ -83,7 +84,16 @@ namespace Microservices.DiscountAPI.Services.Concretes
 
             if (status > 0)
                 return ServiceResponse<NoContent>.Success(204);
-            return ServiceResponse<NoContent>.Failure("error düzelt null da gelebilir 404 de olabilir",500);
+            return ServiceResponse<NoContent>.Failure("Discount is not found", 404);
         }
+        public async Task<ServiceResponse<NoContent>> DeleteDiscountAsync(int id)
+        {
+            int status = await _dbConnection.ExecuteAsync("DELETE FROM discount WHERE id=@Id", new { Id = id });
+
+            if (status > 0)
+                return ServiceResponse<NoContent>.Success(204);
+            return ServiceResponse<NoContent>.Failure("Discount not found", 404);
+        }
+        
     }
 }
