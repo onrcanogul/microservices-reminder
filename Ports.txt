@@ -2,4 +2,6 @@ Services
 -catalog : https - 5011
 -photo stock: https - 5012
 -basket : https - 5013
+-discount : https - 5014
+-order : https - 5015
 

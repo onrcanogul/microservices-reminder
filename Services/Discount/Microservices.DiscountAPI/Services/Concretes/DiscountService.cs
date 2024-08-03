@@ -21,7 +21,6 @@ namespace Microservices.DiscountAPI.Services.Concretes
             _dbConnection = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQL"));
             _mapper = mapper;
         }
-
         public async Task<ServiceResponse<List<DiscountDto>>> GetDiscountsAsync()
         {
             IEnumerable<Discount> discounts = await _dbConnection.QueryAsync<Discount>("SELECT * FROM discount");
@@ -47,7 +46,6 @@ namespace Microservices.DiscountAPI.Services.Concretes
 
             return ServiceResponse<List<DiscountDto>>.Success(discountsDto, StatusCodes.Status200OK);
         }
-
         public async Task<ServiceResponse<DiscountDto>> GetConfirmedCodeAsync(string code, string userId)
         {
             var discounts = await _dbConnection.QueryAsync<Discount>("SELECT * FROM discount WHERE userid=@UserId AND code=@Code", new { UserId = userId, Code = code });
@@ -61,7 +59,6 @@ namespace Microservices.DiscountAPI.Services.Concretes
 
             return ServiceResponse<DiscountDto>.Success(discountDto, 200);
         }
-
         public async Task<ServiceResponse<NoContent>> CreateDiscountAsync(CreateDiscountDto createDiscountDto)
         {
             if (createDiscountDto == null)
