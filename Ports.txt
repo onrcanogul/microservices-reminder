@@ -4,4 +4,7 @@ Services
 -basket : https - 5013
 -discount : https - 5014
 -order : https - 5015
+-payment: https - 5016
+
+Gateway => 5000
 
