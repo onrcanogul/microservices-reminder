@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="MediatR" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Microservices.Shared\Microservices.Shared.csproj" />
     <ProjectReference Include="..\Microservices.OrderDomain\Microservices.OrderDomain.csproj" />
     <ProjectReference Include="..\Microservices.OrderInfrastructure\Microservices.OrderInfrastructure.csproj" />
   </ItemGroup>

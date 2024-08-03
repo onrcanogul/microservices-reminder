@@ -1,9 +1,4 @@
 ﻿using Microservices.OrderDomainCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Microservices.OrderDomain.OrderAggregates
 {
@@ -14,7 +9,10 @@ namespace Microservices.OrderDomain.OrderAggregates
         public string Street { get; private set; } = null!;
         public string ZipCode { get; private set; } = null!;
         public string Line { get; private set; } = null!;
-
+        public Address()
+        {
+            
+        }
         public Address(string province, string district, string street, string zipCode, string line)
         {
             Province = province;
