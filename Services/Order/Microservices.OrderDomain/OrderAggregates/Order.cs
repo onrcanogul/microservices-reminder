@@ -1,4 +1,6 @@
-﻿using Microservices.OrderDomainCore;
+﻿using Microservices.OrderDomain.Enums;
+using Microservices.OrderDomainCore;
+
 
 namespace Microservices.OrderDomain.OrderAggregates
 {
@@ -8,6 +10,7 @@ namespace Microservices.OrderDomain.OrderAggregates
         public Address Address { get; private set; } = null!;
         public string BuyerId { get; private set; } = null!;
         public decimal TotalPrice { get; set; }
+        public OrderStatus OrderStatu { get; set; }
         private readonly List<OrderItem> GetOrderItems = new();
         public IReadOnlyCollection<OrderItem> OrderItems => GetOrderItems;
         public Order()
@@ -19,6 +22,7 @@ namespace Microservices.OrderDomain.OrderAggregates
             CreatedDate = DateTime.Now;
             BuyerId = buyerId;
             Address = address;
+            OrderStatu = OrderStatus.Pending;
         }    
         public void AddOrderItem(string productId, string pictureUrl, decimal price, string productName)
         {
@@ -30,6 +34,14 @@ namespace Microservices.OrderDomain.OrderAggregates
             }
             else
                 existProduct.Count++; 
+        }
+        public void CompleteOrder()
+        {
+            OrderStatu = OrderStatus.Completed;
+        }
+        public void FailOrder()
+        {
+            OrderStatu = OrderStatus.Failed;
         }
         public decimal GetTotalPrice => GetOrderItems.Sum(x => x.Price);
     }

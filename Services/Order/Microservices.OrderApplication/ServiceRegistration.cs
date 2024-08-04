@@ -12,5 +12,7 @@ namespace Microservices.OrderApplication
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(typeof(CreateOrderCommandHandler).Assembly);
         }
+
+
     }
 }

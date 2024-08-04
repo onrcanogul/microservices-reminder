@@ -1,23 +1,18 @@
 ﻿using AutoMapper;
+using MassTransit;
 using MediatR;
 using Microservices.OrderApplication.Dtos;
 using Microservices.OrderDomain.OrderAggregates;
 using Microservices.OrderInfrastructure;
 using Microservices.Shared.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microservices.Shared.Events;
 
 namespace Microservices.OrderApplication.Feature.Commands.CreateOrder
 {
-    public class CreateOrderCommandHandler(OrderDbContext orderDbContext, IMapper mapper) : IRequestHandler<CreateOrderCommandRequest, CreateOrderCommandResponse>
+    public class CreateOrderCommandHandler(OrderDbContext orderDbContext, IMapper mapper, IPublishEndpoint publishEndpoint) : IRequestHandler<CreateOrderCommandRequest, CreateOrderCommandResponse>
     {
         public async Task<CreateOrderCommandResponse> Handle(CreateOrderCommandRequest request, CancellationToken cancellationToken)
         {
-			try
-			{
                 Address address = mapper.Map<Address>(request.Address);
 
                 Order order = new(request.BuyerId, address);
@@ -29,14 +24,23 @@ namespace Microservices.OrderApplication.Feature.Commands.CreateOrder
                 await orderDbContext.Orders.AddAsync(order);
                 await orderDbContext.SaveChangesAsync();
 
-                return new(ServiceResponse<NoContent>.Success(204));
+                OrderCreatedEvent orderCreatedEvent = new()
+                {
+                    BuyerId = request.BuyerId,
+                    OrderId = order.Id,
+                    TotalPrice = order.TotalPrice,
+                    OrderItems = order.OrderItems.Select(o => new Shared.Messages.OrderItemMessage
+                    {
+                        Count = o.Count,
+                        PictureUrl = o.PictureUrl,
+                        Price = o.Price,
+                        ProductId = o.ProductId,
+                        ProductName = o.ProductName
+                    }).ToList()
+                };
+                await publishEndpoint.Publish(orderCreatedEvent);
 
-            }
-			catch (Exception ex)
-			{
-
-				throw ex;
-			}     
+                return new(ServiceResponse<NoContent>.Success(204));	  
         }
     }
 }

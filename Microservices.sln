@@ -48,7 +48,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.PaymentAPI", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateways", "Gateways", "{117BF958-8416-4084-BB5A-DF8558B4EF3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.Gateway", "Gateways\Microservices.Gateway\Microservices.Gateway.csproj", "{47C59687-586D-432A-A45C-9A9E18BF50E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.Gateway", "Gateways\Microservices.Gateway\Microservices.Gateway.csproj", "{47C59687-586D-432A-A45C-9A9E18BF50E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
