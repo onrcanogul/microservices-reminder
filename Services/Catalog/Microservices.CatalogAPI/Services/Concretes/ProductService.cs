@@ -6,7 +6,6 @@ using Microservices.CatalogAPI.Models;
 using Microservices.CatalogAPI.Services.Abstractions;
 using Microservices.Shared.Dtos;
 using Microservices.Shared.Events;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using MongoDB.Driver;
 
 namespace Microservices.CatalogAPI.Services.Concretes
