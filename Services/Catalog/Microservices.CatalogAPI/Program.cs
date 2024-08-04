@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 
 

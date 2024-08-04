@@ -1,7 +1,6 @@
 ﻿using Microservices.CatalogAPI.Dtos;
 using Microservices.CatalogAPI.Services.Abstractions;
 using Microservices.Shared.Base;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Microservices.CatalogAPI.Controllers

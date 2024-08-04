@@ -8,26 +8,26 @@ namespace Microservices.CatalogAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CoursesController(ICourseService courseService) : CustomBaseController
+    public class ProductsController(IProductService productService) : CustomBaseController
     {
         [HttpGet]
         public async Task<IActionResult> GetAll()
-            => ControllerResponse(await courseService.GetAllAsync());
+            => ControllerResponse(await productService.GetAllAsync());
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] string id) 
-            => ControllerResponse(await courseService.GetByIdAsync(id));
+            => ControllerResponse(await productService.GetByIdAsync(id));
         [HttpGet("get-by-user-id/{userId}")]
         public async Task<IActionResult> GetByUser([FromRoute] string userId) 
-            => ControllerResponse(await courseService.GetAllByUserAsync(userId));
+            => ControllerResponse(await productService.GetAllByUserAsync(userId));
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCourseDto model)
-            => ControllerResponse(await courseService.CreateAsync(model));
+        public async Task<IActionResult> Create(CreateProductDto model)
+            => ControllerResponse(await productService.CreateAsync(model));
         [HttpPut]
-        public async Task<IActionResult> Update(UpdateCourseDto model)
-            => ControllerResponse(await courseService.UpdateAsync(model));
+        public async Task<IActionResult> Update(UpdateProductDto model)
+            => ControllerResponse(await productService.UpdateAsync(model));
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
-            => ControllerResponse(await courseService.DeleteAsync(id));
+            => ControllerResponse(await productService.DeleteAsync(id));
 
     }
 }

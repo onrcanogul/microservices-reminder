@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace Microservices.CatalogAPI.Models
 {
-    public class Course
+    public class Product
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -18,8 +18,6 @@ namespace Microservices.CatalogAPI.Models
         public string UserId { get; set; } = null!;
         [BsonRepresentation(BsonType.ObjectId)]
         public string CategoryId { get; set; }
-        public Feature Feature { get; set; }
-        [BsonIgnore]
         public Category Category { get; set; }
 
     }

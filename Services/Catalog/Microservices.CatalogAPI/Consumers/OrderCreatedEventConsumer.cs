@@ -9,13 +9,13 @@ namespace Microservices.CatalogAPI.Consumers
 {
     public class OrderCreatedEventConsumer : IConsumer<OrderCreatedEvent>
     {
-        private readonly IMongoCollection<Course> _courseCollection;
+        private readonly IMongoCollection<Product> _productCollection;
         private readonly IPublishEndpoint _publishEndpoint;
         public OrderCreatedEventConsumer(IDatabaseSettings databaseSettings, IPublishEndpoint publishEndpoint)
         {
             MongoClient mongoClient = new(databaseSettings.ConnectionString);
             IMongoDatabase database = mongoClient.GetDatabase(databaseSettings.DatabaseName);
-            _courseCollection = database.GetCollection<Course>(databaseSettings.CourseCollectionName);
+            _productCollection = database.GetCollection<Product>(databaseSettings.CourseCollectionName);
             _publishEndpoint = publishEndpoint;
         }
         public async Task Consume(ConsumeContext<OrderCreatedEvent> context)
@@ -25,7 +25,7 @@ namespace Microservices.CatalogAPI.Consumers
             try
             {
                 foreach (var orderItem in context.Message.OrderItems)
-                    results.Add(await _courseCollection.Find(c => c.Id == orderItem.ProductId).AnyAsync());
+                    results.Add(await _productCollection.Find(c => c.Id == orderItem.ProductId).AnyAsync());
             }
             catch (Exception ex)
             {

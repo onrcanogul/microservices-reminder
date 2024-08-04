@@ -4,7 +4,7 @@ using MongoDB.Bson;
 
 namespace Microservices.CatalogAPI.Dtos
 {
-    public class CourseDto
+    public class ProductDto
     {
         
         public string Id { get; set; } = null!;
@@ -17,8 +17,6 @@ namespace Microservices.CatalogAPI.Dtos
         public DateTime CreatedDate { get; set; }
         public string UserId { get; set; } = null!;
         public string CategoryId { get; set; }
-        public FeatureDto? Feature { get; set; }
-        [BsonIgnore]
         public CategoryDto? Category { get; set; }
     }
 }
