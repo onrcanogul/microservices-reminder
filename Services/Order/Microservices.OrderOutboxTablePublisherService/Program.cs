@@ -1,10 +1,12 @@
 using MassTransit;
 using Microservices.OrderOutboxTablePublisherService;
 using Microservices.OrderOutboxTablePublisherService.Jobs;
+using Microservices.OrderOutboxTablePublisherService.Services;
 using Quartz;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddSingleton<IOrderOutboxSingletonDatabase, OrderOutboxSingletonDatabase>();
+builder.Services.AddScoped<IOrderOutboxService, OrderOutboxService>();
 
 builder.Services.AddQuartz(configure =>
 {

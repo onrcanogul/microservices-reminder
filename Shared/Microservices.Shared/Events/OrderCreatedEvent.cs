@@ -1,9 +1,10 @@
-﻿using Microservices.Shared.Messages;
+﻿using Microservices.Shared.Events.Base;
+using Microservices.Shared.Messages;
 
 
 namespace Microservices.Shared.Events
 {
-    public class OrderCreatedEvent
+    public class OrderCreatedEvent : IEvent
     {
         public Guid IdempotentToken { get; set; }
         public int OrderId { get; set; }
