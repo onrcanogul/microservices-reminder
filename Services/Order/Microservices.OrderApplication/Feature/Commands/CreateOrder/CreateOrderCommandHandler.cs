@@ -3,44 +3,58 @@ using MassTransit;
 using MediatR;
 using Microservices.OrderApplication.Dtos;
 using Microservices.OrderDomain.OrderAggregates;
+using Microservices.OrderDomain.Outboxes;
 using Microservices.OrderInfrastructure;
 using Microservices.Shared.Dtos;
 using Microservices.Shared.Events;
+using System.Text.Json;
 
 namespace Microservices.OrderApplication.Feature.Commands.CreateOrder
 {
-    public class CreateOrderCommandHandler(OrderDbContext orderDbContext, IMapper mapper, IPublishEndpoint publishEndpoint) : IRequestHandler<CreateOrderCommandRequest, CreateOrderCommandResponse>
+    public class CreateOrderCommandHandler(OrderDbContext orderDbContext, IMapper mapper) : IRequestHandler<CreateOrderCommandRequest, CreateOrderCommandResponse>
     {
         public async Task<CreateOrderCommandResponse> Handle(CreateOrderCommandRequest request, CancellationToken cancellationToken)
         {
-                Address address = mapper.Map<Address>(request.Address);
+            Address address = mapper.Map<Address>(request.Address);
 
-                Order order = new(request.BuyerId, address);
-                order.TotalPrice = order.GetTotalPrice;
+            Order order = new(request.BuyerId, address);
+            order.TotalPrice = order.GetTotalPrice;
 
-                foreach (OrderItemDto orderItem in request.OrderItems)
-                    order.AddOrderItem(orderItem.ProductId, orderItem.PictureUrl, orderItem.Price, orderItem.ProductName);
+            foreach (OrderItemDto orderItem in request.OrderItems)
+                order.AddOrderItem(orderItem.ProductId, orderItem.PictureUrl, orderItem.Price, orderItem.ProductName);
 
-                await orderDbContext.Orders.AddAsync(order);
-                await orderDbContext.SaveChangesAsync();
+            await orderDbContext.Orders.AddAsync(order);
 
-                OrderCreatedEvent orderCreatedEvent = new()
+            var idempotentToken = Guid.NewGuid();
+            OrderCreatedEvent orderCreatedEvent = new()
+            {
+                IdempotentToken = idempotentToken,
+                BuyerId = request.BuyerId,
+                OrderId = order.Id,
+                TotalPrice = order.TotalPrice,
+                OrderItems = order.OrderItems.Select(o => new Shared.Messages.OrderItemMessage
                 {
-                    BuyerId = request.BuyerId,
-                    OrderId = order.Id,
-                    TotalPrice = order.TotalPrice,
-                    OrderItems = order.OrderItems.Select(o => new Shared.Messages.OrderItemMessage
-                    {
-                        Count = o.Count,
-                        PictureUrl = o.PictureUrl,
-                        Price = o.Price,
-                        ProductId = o.ProductId,
-                        ProductName = o.ProductName
-                    }).ToList()
-                };
-                await publishEndpoint.Publish(orderCreatedEvent);
+                    Count = o.Count,
+                    PictureUrl = o.PictureUrl,
+                    Price = o.Price,
+                    ProductId = o.ProductId,
+                    ProductName = o.ProductName
+                }).ToList()
+            };
+            OrderOutbox orderOutbox = new()
+            {
+                IdempotentToken = idempotentToken,
+                OccuredOn = DateTime.UtcNow,
+                ProcessedOn = null,
+                Type = orderCreatedEvent.GetType().Name,
+                Payload = JsonSerializer.Serialize(orderCreatedEvent)
+            };
 
-                return new(ServiceResponse<NoContent>.Success(204));	  
+            await orderDbContext.OrderOutboxes.AddAsync(orderOutbox);
+
+            await orderDbContext.SaveChangesAsync(); // save changes at the same time.
+
+            return new(ServiceResponse<NoContent>.Success(204));
         }
     }
 }

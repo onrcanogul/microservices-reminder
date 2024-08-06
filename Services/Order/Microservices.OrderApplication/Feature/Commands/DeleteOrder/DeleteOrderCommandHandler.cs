@@ -18,7 +18,7 @@ namespace Microservices.OrderApplication.Feature.Commands.DeleteOrder
             Order? order = await orderDbContext.Orders
                 .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == request.Id);
-            if (order == null)
+            if (order is null)
                 return new(ServiceResponse<NoContent>.Failure("order not found", 404));
             
             orderDbContext.Orders.Remove(order);

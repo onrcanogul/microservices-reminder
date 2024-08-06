@@ -1,4 +1,5 @@
 ﻿using Microservices.OrderDomain.OrderAggregates;
+using Microservices.OrderDomain.Outboxes;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,9 @@ namespace Microservices.OrderInfrastructure
         public OrderDbContext(DbContextOptions options) : base(options)
         {
         }
-
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderOutbox> OrderOutboxes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
