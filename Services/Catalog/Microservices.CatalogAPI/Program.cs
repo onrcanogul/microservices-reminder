@@ -1,3 +1,4 @@
+
 using MassTransit;
 using Microservices.CatalogAPI.Configurations;
 using Microservices.CatalogAPI.Consumers;
@@ -21,8 +22,11 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 
 
+builder.Services.AddDbContext<CatalogOutboxDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer"));
 
-
+});
 
 builder.Services.AddMassTransit(config =>
 {

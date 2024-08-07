@@ -26,8 +26,8 @@ builder.Services.AddMassTransit(configure =>
         configurator.ReceiveEndpoint(RabbitMqSettings.Payment_Order_PaymentCompletedEventQueue, e => e.ConfigureConsumer<PaymentCompletedEventConsumer>(context));
         configurator.ReceiveEndpoint(RabbitMqSettings.Payment_Order_PaymentFailedEventQueue, e => e.ConfigureConsumer<PaymentFailedEventConsumer>(context));
         configurator.ReceiveEndpoint(RabbitMqSettings.Catalog_ProductNotAvailableMessageQueue, e => e.ConfigureConsumer<ProductNotFoundEventConsumer>(context));
-        configurator.ReceiveEndpoint(RabbitMqSettings.Catalog_ProductUpdatedEventQueue, e => e.ConfigureConsumer<ProductUpdatedEventConsumer>(context));
-        configurator.ReceiveEndpoint(RabbitMqSettings.Catalog_ProductDeletedEventQueue, e => e.ConfigureConsumer<ProductDeletedEventConsumer>(context));
+        configurator.ReceiveEndpoint(RabbitMqSettings.CatalogInbox_ProductUpdatedEventQueue, e => e.ConfigureConsumer<ProductUpdatedEventConsumer>(context));
+        configurator.ReceiveEndpoint(RabbitMqSettings.CatalogInbox_ProductDeletedEventQueue, e => e.ConfigureConsumer<ProductDeletedEventConsumer>(context));
     });
 });
 

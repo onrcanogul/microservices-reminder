@@ -9,6 +9,7 @@ namespace Microservices.Shared.Events
 {
     public class ProductDeletedEvent : BaseEvent
     {
+        public Guid IdempotentToken { get; set; }
         public string ProductId { get; set; }
     }
 }

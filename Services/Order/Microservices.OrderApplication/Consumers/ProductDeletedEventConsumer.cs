@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Microservices.OrderApplication.Consumers
 {
-    public class ProductDeletedEventConsumer(OrderDbContext orderDbContext) : IConsumer<ProductDeletedEvent>
+    public class ProductDeletedEventConsumer(OrderDbContext orderDbContext) : IConsumer<ProductDeletedInboxToConsumerEvent>
     {
-        public async Task Consume(ConsumeContext<ProductDeletedEvent> context)
+        public async Task Consume(ConsumeContext<ProductDeletedInboxToConsumerEvent> context)
         {
             List<OrderItem> orderItems = await orderDbContext.OrderItems
-                .Where(oi => oi.ProductId == context.Message.ProductId)
+                .Where(oi => oi.ProductId == context.Message.@event.ProductId)
                 .ToListAsync();
 
             orderDbContext.OrderItems.RemoveRange(orderItems);

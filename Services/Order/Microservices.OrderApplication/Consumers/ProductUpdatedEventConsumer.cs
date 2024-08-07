@@ -3,23 +3,19 @@ using Microservices.OrderDomain.OrderAggregates;
 using Microservices.OrderInfrastructure;
 using Microservices.Shared.Events;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Microservices.OrderApplication.Consumers
 {
-    public class ProductUpdatedEventConsumer(OrderDbContext orderDbContext) : IConsumer<ProductUpdatedEvent>
+    public class ProductUpdatedEventConsumer(OrderDbContext orderDbContext) : IConsumer<ProductUpdatedInboxToConsumerEvent>
     {
-        public async Task Consume(ConsumeContext<ProductUpdatedEvent> context)
+        public async Task Consume(ConsumeContext<ProductUpdatedInboxToConsumerEvent> context)
         {
             List<OrderItem> orderItems = await orderDbContext.OrderItems
-                .Where(p => p.ProductId == context.Message.ProductId)
+                .Where(p => p.ProductId == context.Message.@event.ProductId)
                 .ToListAsync();
 
-            orderItems.ForEach(oi => oi.UpdateOrderItem(context.Message.ProductName, context.Message.PictureUrl, context.Message.Price));
+            orderItems.ForEach(oi => oi.UpdateOrderItem(context.Message.@event.ProductName, context.Message.@event.PictureUrl, context.Message.@event.Price));
 
             await orderDbContext.SaveChangesAsync();
         }

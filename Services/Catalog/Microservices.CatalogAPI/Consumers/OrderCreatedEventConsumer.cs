@@ -13,7 +13,6 @@ namespace Microservices.CatalogAPI.Consumers
     {
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IPublishEndpoint _publishEndpoint;
-        private readonly OrderInboxDbContext _orderInboxContext;
         public OrderCreatedEventConsumer(IDatabaseSettings databaseSettings, IPublishEndpoint publishEndpoint)
         {
             MongoClient mongoClient = new(databaseSettings.ConnectionString);

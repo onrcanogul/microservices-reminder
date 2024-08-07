@@ -9,6 +9,7 @@ namespace Microservices.Shared.Events
 {
     public class ProductUpdatedEvent : BaseEvent
     {
+        public Guid IdempotentToken { get; set; }
         public string ProductId { get; set; }
         public string ProductName { get; set; }
         public string PictureUrl { get; set; }
