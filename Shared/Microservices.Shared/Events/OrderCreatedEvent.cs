@@ -4,7 +4,7 @@ using Microservices.Shared.Messages;
 
 namespace Microservices.Shared.Events
 {
-    public class OrderCreatedEvent : IEvent
+    public class OrderCreatedEvent : BaseEvent
     {
         public Guid IdempotentToken { get; set; }
         public int OrderId { get; set; }

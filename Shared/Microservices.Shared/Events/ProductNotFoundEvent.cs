@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microservices.Shared.Events
 {
-    public class ProductNotFoundEvent : IEvent
+    public class ProductNotFoundEvent : BaseEvent
     {
         public int OrderId { get; set; }
         public string Message { get; set; }

@@ -1,9 +1,11 @@
 using MassTransit;
 using Microservices.CatalogAPI.Configurations;
 using Microservices.CatalogAPI.Consumers;
+using Microservices.CatalogAPI.Contexts;
 using Microservices.CatalogAPI.Services.Abstractions;
 using Microservices.CatalogAPI.Services.Concretes;
 using Microservices.Shared;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,13 +21,16 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 
 
+
+
+
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<OrderCreatedEventConsumer>();
     config.UsingRabbitMq((context, configure) =>
     {
         configure.Host(builder.Configuration["RabbitMQ"]);
-        configure.ReceiveEndpoint(RabbitMqSettings.Order_OrderCreatedEventQueue_PE, e => e.ConfigureConsumer<OrderCreatedEventConsumer>(context));
+        configure.ReceiveEndpoint(RabbitMqSettings.OrderInbox_OrderCreatedInboxEventQueue, e => e.ConfigureConsumer<OrderCreatedEventConsumer>(context));
     });
 });
 

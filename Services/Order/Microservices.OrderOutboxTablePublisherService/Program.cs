@@ -18,7 +18,7 @@ builder.Services.AddQuartz(configure =>
     .WithIdentity(triggerKey)
     .StartAt(DateTime.UtcNow)
     .WithSimpleSchedule(builder => builder
-    .WithIntervalInSeconds(5)
+    .WithIntervalInSeconds(60)
     .RepeatForever()));
 });
 builder.Services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);

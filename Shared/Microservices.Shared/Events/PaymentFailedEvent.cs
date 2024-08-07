@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microservices.Shared.Events
 {
-    public class PaymentFailedEvent : IEvent
+    public class PaymentFailedEvent : BaseEvent
     {
         public int OrderId { get; set; }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microservices.Shared.Events.Base
 {
-    public class IEvent
+    public class BaseEvent
     {
     }
 }

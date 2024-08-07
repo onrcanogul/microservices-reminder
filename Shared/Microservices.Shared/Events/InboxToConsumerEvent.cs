@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Microservices.Shared.Events
 {
-    public class ProductDeletedEvent : BaseEvent
+    public class OrderCreatedInboxToConsumerEvent : BaseEvent
     {
-        public string ProductId { get; set; }
+        public OrderCreatedEvent @event { get; set; }
     }
 }
