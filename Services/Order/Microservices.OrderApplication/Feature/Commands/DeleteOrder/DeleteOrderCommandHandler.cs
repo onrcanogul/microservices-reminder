@@ -2,6 +2,7 @@
 using Microservices.OrderDomain.OrderAggregates;
 using Microservices.OrderInfrastructure;
 using Microservices.Shared.Dtos;
+using Microservices.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Microservices.OrderApplication.Feature.Commands.DeleteOrder
                 .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == request.Id);
             if (order is null)
-                return new(ServiceResponse<NoContent>.Failure("order not found", 404));
+                throw new NotFoundException("Order not found");
             
             orderDbContext.Orders.Remove(order);
             await orderDbContext.SaveChangesAsync();

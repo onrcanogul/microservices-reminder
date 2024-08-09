@@ -26,8 +26,8 @@ namespace Microservices.OrderAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateOrderCommandRequest request)
             => ControllerResponse((await mediator.Send(request)).Response);
-        [HttpDelete]
-        public async Task<IActionResult> Delete(DeleteOrderCommandRequest request)
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> Delete([FromRoute]DeleteOrderCommandRequest request)
             => ControllerResponse((await mediator.Send(request)).Response);
         [HttpPut]
         public async Task<IActionResult> UpdateOrderItem(UpdateOrderItemCommandRequest request)

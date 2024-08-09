@@ -7,6 +7,7 @@ using Microservices.CatalogAPI.Models;
 using Microservices.CatalogAPI.Services.Abstractions;
 using Microservices.Shared.Dtos;
 using Microservices.Shared.Events;
+using Microservices.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using System.Text.Json;
@@ -43,7 +44,7 @@ namespace Microservices.CatalogAPI.Services.Concretes
             Product product = await (await _productCollection.FindAsync(product => product.Id == id)).FirstOrDefaultAsync();
 
             if (product == null)
-                return ServiceResponse<ProductDto>.Failure("Product Not Found", StatusCodes.Status404NotFound);
+                throw new NotFoundException("Product not found");
 
             ProductDto productDto = _mapper.Map<ProductDto>(product);
 
@@ -60,7 +61,7 @@ namespace Microservices.CatalogAPI.Services.Concretes
         public async Task<ServiceResponse<NoContent>> CreateAsync(CreateProductDto model)
         {
             if (model == null)
-                return ServiceResponse<NoContent>.Failure("Create Product Model Not Found", StatusCodes.Status400BadRequest);
+                throw new BadRequestException("Create product model is null or empty");
 
             Product product = _mapper.Map<Product>(model);
 
@@ -71,11 +72,12 @@ namespace Microservices.CatalogAPI.Services.Concretes
         public async Task<ServiceResponse<NoContent>> UpdateAsync(UpdateProductDto model)
         {
             if (model == null)
-                return ServiceResponse<NoContent>.Failure("Update Product Model Not Found", StatusCodes.Status400BadRequest);
+                throw new BadRequestException("Update Product Model is null or empty");
 
             Product course = await (await _productCollection.FindAsync(course => course.Id == model.Id)).FirstOrDefaultAsync();
+
             if (course == null)
-                return ServiceResponse<NoContent>.Failure("Product Not Found", StatusCodes.Status404NotFound);
+                throw new NotFoundException("Product not found");
 
             Product updatedCourse = _mapper.Map(model, course);
             Task updateTask = _productCollection.FindOneAndReplaceAsync(c => c.Id == model.Id, updatedCourse);
@@ -109,12 +111,12 @@ namespace Microservices.CatalogAPI.Services.Concretes
         public async Task<ServiceResponse<NoContent>> DeleteAsync(string id)
         {
             if (id == string.Empty)
-                return ServiceResponse<NoContent>.Failure("Id is null", StatusCodes.Status400BadRequest);
+                throw new BadRequestException("Id is null or empty");
 
             bool isExist = await (await _productCollection.FindAsync(course => course.Id == id)).AnyAsync();
 
             if (!isExist)
-                return ServiceResponse<NoContent>.Failure("Product Not Found", StatusCodes.Status404NotFound);
+                throw new NotFoundException("Product not found");
 
             Task deleteTask = _productCollection.FindOneAndDeleteAsync(c => c.Id == id);
 

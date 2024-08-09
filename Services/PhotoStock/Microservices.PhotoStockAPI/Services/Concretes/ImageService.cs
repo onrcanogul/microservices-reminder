@@ -2,18 +2,19 @@
 using Microservices.PhotoStockAPI.Models.Contexts;
 using Microservices.PhotoStockAPI.Services.Abstractions;
 using Microservices.Shared.Dtos;
+using Microservices.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 
 namespace Microservices.PhotoStockAPI.Services.Concretes
 {
-    public class İmageService(IWebHostEnvironment webHostEnvironment, ImageDbContext context) : IImageService
+    public class ImageService(IWebHostEnvironment webHostEnvironment, ImageDbContext context) : IImageService
     {
         public async Task<ServiceResponse<NoContent>> SavePhoto(IFormFileCollection photos, Guid productId)
         {
             if (photos == null)
-                return ServiceResponse<NoContent>.Failure("Photos are null", StatusCodes.Status400BadRequest);
+                throw new BadRequestException("Photos are null or empty");
 
             List<string> paths = await UploadAsync(photos);
             await context.Images.AddRangeAsync(paths.Select(p => new Models.Image
@@ -29,7 +30,7 @@ namespace Microservices.PhotoStockAPI.Services.Concretes
         {
             Image? image = await context.Images.FirstOrDefaultAsync(i => i.Id == imageId);
             if (image == null)
-                return ServiceResponse<NoContent>.Failure("image not found", 404);
+                throw new NotFoundException("Image not found");
 
             context.Images.Remove(image);
             await context.SaveChangesAsync();
@@ -69,7 +70,7 @@ namespace Microservices.PhotoStockAPI.Services.Concretes
             if(results.TrueForAll(r => r.Equals(true)))
                 return imagePaths;
 
-            throw new BadHttpRequestException("Bad Request for images");
+            throw new BadRequestException("Images are null or empty");
         }
     }
 }

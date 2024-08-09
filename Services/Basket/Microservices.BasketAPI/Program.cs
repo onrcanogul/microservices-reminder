@@ -2,6 +2,7 @@ using Microservices.BasketAPI.Services;
 using Microservices.BasketAPI.Services.Abstractions;
 using Microservices.BasketAPI.Services.Concretes;
 using Microservices.BasketAPI.Settings;
+using Microservices.Shared.Exceptions.Handler;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,7 @@ builder.Services.AddSingleton<RedisService>(sp =>
 });
 
 builder.Services.AddScoped<IBasketService, BasketService>();
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 
 
@@ -33,6 +35,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler(options => { });
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

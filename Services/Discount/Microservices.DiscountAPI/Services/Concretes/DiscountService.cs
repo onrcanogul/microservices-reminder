@@ -4,6 +4,7 @@ using Microservices.DiscountAPI.Dtos;
 using Microservices.DiscountAPI.Models;
 using Microservices.DiscountAPI.Services.Abstractions;
 using Microservices.Shared.Dtos;
+using Microservices.Shared.Exceptions;
 using Npgsql;
 using System.Data;
 
@@ -32,7 +33,7 @@ namespace Microservices.DiscountAPI.Services.Concretes
         {
             Discount? discount = (await _dbConnection.QueryAsync<Discount>("SELECT * FROM discount WHERE id=@Id", new { Id = id })).SingleOrDefault();
             if (discount == null)
-                return ServiceResponse<DiscountDto>.Failure("Discount not found", StatusCodes.Status404NotFound);
+                throw new NotFoundException("Discount not found");
 
             DiscountDto discountDto = _mapper.Map<DiscountDto>(discount);
 
@@ -53,7 +54,7 @@ namespace Microservices.DiscountAPI.Services.Concretes
             var hasDiscount = discounts.FirstOrDefault();
 
             if (hasDiscount == null)
-                ServiceResponse<DiscountDto>.Failure("Discount not found", 404);
+                throw new NotFoundException("Discount not found");
 
             DiscountDto discountDto = _mapper.Map<DiscountDto>(hasDiscount);
 
@@ -62,15 +63,13 @@ namespace Microservices.DiscountAPI.Services.Concretes
         public async Task<ServiceResponse<NoContent>> CreateDiscountAsync(CreateDiscountDto createDiscountDto)
         {
             if (createDiscountDto == null)
-                return ServiceResponse<NoContent>.Failure("Discount is null or empty", 400);
-
-
+                throw new BadRequestException("Discount is null or empty");
 
             var status = await _dbConnection.ExecuteAsync("INSERT INTO discount (userId, rate, code) VALUES(@UserId, @Rate, @Code)", createDiscountDto);
             if (status > 0)
                 return ServiceResponse<NoContent>.Success(204);
 
-            return ServiceResponse<NoContent>.Failure("an error accured while adding", 500);
+            throw new InternalServerException("Error while adding discount");
         }
         public async Task<ServiceResponse<NoContent>> UpdateDiscountAsync(UpdateDiscountDto updateDiscountDto)
         {

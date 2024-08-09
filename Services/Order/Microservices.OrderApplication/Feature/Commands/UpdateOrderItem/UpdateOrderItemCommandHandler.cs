@@ -2,6 +2,7 @@
 using Microservices.OrderDomain.OrderAggregates;
 using Microservices.OrderInfrastructure;
 using Microservices.Shared.Dtos;
+using Microservices.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Microservices.OrderApplication.Feature.Commands.UpdateOrderItem
@@ -15,8 +16,8 @@ namespace Microservices.OrderApplication.Feature.Commands.UpdateOrderItem
                 .AsNoTracking()
                 .FirstOrDefaultAsync(oi => oi.Id == request.Id);
 
-            if (orderItem == null)
-                return new(ServiceResponse<NoContent>.Failure("order item not found", 404));
+            if (orderItem is null)
+                throw new NotFoundException("Order not found");
 
             orderItem.UpdateOrderItem(request.ProductName, request.PictureUrl, request.Price);
 

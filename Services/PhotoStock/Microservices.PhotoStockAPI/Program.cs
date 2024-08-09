@@ -1,6 +1,7 @@
 using Microservices.PhotoStockAPI.Models.Contexts;
 using Microservices.PhotoStockAPI.Services.Abstractions;
 using Microservices.PhotoStockAPI.Services.Concretes;
+using Microservices.Shared.Exceptions.Handler;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,18 +16,22 @@ builder.Services.AddDbContext<ImageDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"));
 });
-builder.Services.AddScoped<IImageService, ÝmageService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 
 var app = builder.Build();
 
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler(options => { });
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();

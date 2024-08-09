@@ -4,6 +4,7 @@ using Microservices.OrderApplication.Dtos;
 using Microservices.OrderDomain.OrderAggregates;
 using Microservices.OrderInfrastructure;
 using Microservices.Shared.Dtos;
+using Microservices.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,9 @@ namespace Microservices.OrderApplication.Feature.Queries.GetOrderById
                 .Include(o => o.OrderItems)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == request.Id);
-            if (order == null)
-                response = ServiceResponse<OrderDto>.Failure("order not found", 404);
+
+            if (order is null)
+                throw new NotFoundException("Order not found");
             else
                 response = ServiceResponse<OrderDto>.Success(mapper.Map<OrderDto>(order), 200);
 

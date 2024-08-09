@@ -6,6 +6,7 @@ using Microservices.CatalogAPI.Contexts;
 using Microservices.CatalogAPI.Services.Abstractions;
 using Microservices.CatalogAPI.Services.Concretes;
 using Microservices.Shared;
+using Microservices.Shared.Exceptions.Handler;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -46,6 +47,7 @@ builder.Services.AddSingleton<IDatabaseSettings>(sp =>
 
 
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
 
@@ -54,6 +56,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseExceptionHandler(options => { });
 
 app.UseHttpsRedirection();
 

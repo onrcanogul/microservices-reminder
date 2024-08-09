@@ -1,5 +1,6 @@
 using Microservices.DiscountAPI.Services.Abstractions;
 using Microservices.DiscountAPI.Services.Concretes;
+using Microservices.Shared.Exceptions.Handler;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
 
@@ -21,6 +23,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler(options => { });
 
 app.UseHttpsRedirection();
 

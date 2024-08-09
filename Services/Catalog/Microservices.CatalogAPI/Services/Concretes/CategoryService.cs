@@ -4,6 +4,7 @@ using Microservices.CatalogAPI.Dtos;
 using Microservices.CatalogAPI.Models;
 using Microservices.CatalogAPI.Services.Abstractions;
 using Microservices.Shared.Dtos;
+using Microservices.Shared.Exceptions;
 using MongoDB.Driver;
 
 namespace Microservices.CatalogAPI.Services.Concretes
@@ -35,7 +36,7 @@ namespace Microservices.CatalogAPI.Services.Concretes
             Category category = await (await _categoryCollection.FindAsync(c => c.Id == id)).FirstOrDefaultAsync();
 
             if (category == null)
-                return ServiceResponse<CategoryDto>.Failure("Category Not Found", StatusCodes.Status404NotFound);
+                throw new NotFoundException("Category not found");
 
             CategoryDto categoryDto = _mapper.Map<CategoryDto>(category);
 
@@ -55,7 +56,7 @@ namespace Microservices.CatalogAPI.Services.Concretes
             Category category = await (await _categoryCollection.FindAsync(category => category.Id == model.Id)).FirstOrDefaultAsync();
 
             if (category == null)
-                return ServiceResponse<NoContent>.Failure("Category Not Found", StatusCodes.Status404NotFound);
+                throw new NotFoundException("Category not found");
 
             category.Name = model.Name;
 
@@ -68,7 +69,7 @@ namespace Microservices.CatalogAPI.Services.Concretes
             bool isExist = await (await _categoryCollection.FindAsync(category => category.Id == id)).AnyAsync();
 
             if (!isExist)
-                return ServiceResponse<NoContent>.Failure("Category Not Found", StatusCodes.Status404NotFound);
+                throw new NotFoundException("Category not found");
 
             await _categoryCollection.FindOneAndDeleteAsync(c => c.Id == id);
 

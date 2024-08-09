@@ -3,6 +3,7 @@ using Microservices.OrderApplication;
 using Microservices.OrderApplication.Consumers;
 using Microservices.OrderInfrastructure;
 using Microservices.Shared;
+using Microservices.Shared.Exceptions.Handler;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,7 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer"));
 });
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
 
@@ -45,6 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseExceptionHandler(options => { });
 
 app.UseHttpsRedirection();
 
