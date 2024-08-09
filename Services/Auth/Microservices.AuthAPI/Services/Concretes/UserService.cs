@@ -1,5 +1,6 @@
 ﻿using Microservices.AuthAPI.Models;
 using Microservices.AuthAPI.Services.Abstracts;
+using Microservices.Shared.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace Microservices.AuthAPI.Services.Concretes
@@ -14,7 +15,7 @@ namespace Microservices.AuthAPI.Services.Concretes
                 user.RefreshTokenExpiration = accessTokenEndDate.AddMinutes(1);
                 await userManager.UpdateAsync(user);
             }
-            else throw new Exception("User is not found");
+            else throw new NotFoundException("User not found");
         }
     }
 }

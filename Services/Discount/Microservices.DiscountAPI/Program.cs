@@ -1,3 +1,5 @@
+using FluentValidation;
+using Microservices.DiscountAPI.Dtos.Validators;
 using Microservices.DiscountAPI.Services.Abstractions;
 using Microservices.DiscountAPI.Services.Concretes;
 using Microservices.Shared.Exceptions.Handler;
@@ -14,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddExceptionHandler<ExceptionHandler>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateDiscountValidator>();
 
 var app = builder.Build();
 

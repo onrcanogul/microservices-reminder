@@ -1,3 +1,5 @@
+using FluentValidation;
+using Microservices.BasketAPI.Dtos.Validators;
 using Microservices.BasketAPI.Services;
 using Microservices.BasketAPI.Services.Abstractions;
 using Microservices.BasketAPI.Services.Concretes;
@@ -23,6 +25,7 @@ builder.Services.AddSingleton<RedisService>(sp =>
 
 builder.Services.AddScoped<IBasketService, BasketService>();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
+builder.Services.AddValidatorsFromAssemblyContaining<BasketDtoValidator>();
 
 
 

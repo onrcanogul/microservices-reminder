@@ -1,8 +1,10 @@
 
+using FluentValidation;
 using MassTransit;
 using Microservices.CatalogAPI.Configurations;
 using Microservices.CatalogAPI.Consumers;
 using Microservices.CatalogAPI.Contexts;
+using Microservices.CatalogAPI.Dtos.Validators;
 using Microservices.CatalogAPI.Services.Abstractions;
 using Microservices.CatalogAPI.Services.Concretes;
 using Microservices.Shared;
@@ -48,6 +50,7 @@ builder.Services.AddSingleton<IDatabaseSettings>(sp =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddExceptionHandler<ExceptionHandler>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
 
 var app = builder.Build();
 
